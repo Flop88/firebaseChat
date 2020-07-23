@@ -13,6 +13,9 @@ import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +33,23 @@ public class MainActivity extends AppCompatActivity {
 
     private String username;
 
+    FirebaseDatabase database;
+    DatabaseReference messagesDatabaseReference;
+    DatabaseReference usersDatabaseReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        database = FirebaseDatabase.getInstance();
+        messagesDatabaseReference = database.getReference().child("messages");
+        usersDatabaseReference = database.getReference().child("users");
+
+        messagesDatabaseReference.child("message1").setValue("Hello Firebase!");
+        messagesDatabaseReference.child("message2").setValue("Hello World!");
+
+        usersDatabaseReference.child("user1").setValue("Joe");
 
         progressBar = findViewById(R.id.progressBar);
         sendImageButton = findViewById(R.id.sendPhotoButton);
