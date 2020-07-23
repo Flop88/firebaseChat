@@ -44,12 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         messagesDatabaseReference = database.getReference().child("messages");
-        usersDatabaseReference = database.getReference().child("users");
 
-        messagesDatabaseReference.child("message1").setValue("Hello Firebase!");
-        messagesDatabaseReference.child("message2").setValue("Hello World!");
-
-        usersDatabaseReference.child("user1").setValue("Joe");
 
         progressBar = findViewById(R.id.progressBar);
         sendImageButton = findViewById(R.id.sendPhotoButton);
@@ -93,6 +88,15 @@ public class MainActivity extends AppCompatActivity {
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Message message = new Message();
+                message.setText(messageEditText.getText().toString());
+                message.setName(username);
+                message.setImageUrl(null);
+
+                messagesDatabaseReference.push().setValue(message);
+
+
                 messageEditText.setText(""); // Clear messageEditText;
 
             }
