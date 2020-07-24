@@ -1,5 +1,6 @@
 package ru.mvlikhachev.firebasechat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,9 +25,12 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private EditText emailEditText;
     private EditText passwordEditText;
+    private EditText confirmPasswordEditText;
     private EditText nameEditText;
     private Button loginSignUpButton;
     private TextView toggleLoginSignUpTextView;
+
+    private boolean loginModeActive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class SignInActivity extends AppCompatActivity {
 
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
+        confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
         nameEditText = findViewById(R.id.nameEditText);
         loginSignUpButton = findViewById(R.id.loginSignUpButton);
         toggleLoginSignUpTextView = findViewById(R.id.toggleLoginSignUpTextView);
@@ -72,6 +77,21 @@ public class SignInActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+
+        startActivity(new Intent(SignInActivity.this, MainActivity.class));
     }
 
+    public void toggleLoginMode(View view) {
+
+        if (loginModeActive) {
+            loginModeActive = false;
+            loginSignUpButton.setText("Sugn Up");
+            toggleLoginSignUpTextView.setText("Or, log in");
+        } else  {
+            loginModeActive = true;
+            loginSignUpButton.setText("Log in");
+            toggleLoginSignUpTextView.setText("Or, Sign up");
+        }
+
+    }
 }
