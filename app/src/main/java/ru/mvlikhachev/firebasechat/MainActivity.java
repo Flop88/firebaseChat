@@ -31,6 +31,7 @@ import java.util.List;
 
 import ru.mvlikhachev.firebasechat.Data.MessageAdapter;
 import ru.mvlikhachev.firebasechat.Model.Message;
+import ru.mvlikhachev.firebasechat.Model.User;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference messagesDatabaseReference;
     ChildEventListener messagesChildeEventListener;
 
+    DatabaseReference usersDatabaseReference;
+    ChildEventListener usersChildeEventListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         messagesDatabaseReference = database.getReference().child("messages");
+        usersDatabaseReference = database.getReference().child("users");
 
 
         progressBar = findViewById(R.id.progressBar);
@@ -124,6 +129,37 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        usersChildeEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                if (user.getId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    username = user.getName();
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        usersDatabaseReference.addChildEventListener(usersChildeEventListener);
 
         messagesChildeEventListener = new ChildEventListener() {
             @Override
