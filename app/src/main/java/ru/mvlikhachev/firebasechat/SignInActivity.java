@@ -54,6 +54,11 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        // Если пользователь авторизован - сразу открыть мэйн активити
+        if (auth.getCurrentUser() != null) {
+            startActivity(new Intent(SignInActivity.this, MainActivity.class));
+        }
+
     }
 
     private void loginSignUpUser(String email, String password) {
