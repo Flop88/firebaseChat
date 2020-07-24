@@ -74,9 +74,9 @@ public class SignInActivity extends AppCompatActivity {
     private void loginSignUpUser(String email, String password) {
 
         if (loginModeActive) {
-            if(passwordEditText.getText().toString().trim().length() < 6) {
+            if (passwordEditText.getText().toString().trim().length() < 6) {
                 Toast.makeText(this, "Password must be at least 6 characters ", Toast.LENGTH_SHORT).show();
-            } else if(emailEditText.getText().toString().trim().equals("")) {
+            } else if (emailEditText.getText().toString().trim().equals("")) {
                 Toast.makeText(this, "Please input your email ", Toast.LENGTH_SHORT).show();
             } else {
                 auth.signInWithEmailAndPassword(email, password)
@@ -109,9 +109,9 @@ public class SignInActivity extends AppCompatActivity {
                 Toast.makeText(this, "Passwords don't match", Toast.LENGTH_SHORT).show();
                 Log.d("PASSWORD", passwordEditText.getText().toString().trim() + " " + confirmPasswordEditText.getText().toString().trim());
                 Log.d("PASSWORD", emailEditText.getText().toString().trim());
-            } else if(passwordEditText.getText().toString().trim().length() < 6) {
+            } else if (passwordEditText.getText().toString().trim().length() < 6) {
                 Toast.makeText(this, "Password must be at least 7 characters ", Toast.LENGTH_SHORT).show();
-            } else if(emailEditText.getText().toString().trim().equals("")) {
+            } else if (emailEditText.getText().toString().trim().equals("")) {
                 Toast.makeText(this, "Please input your email ", Toast.LENGTH_SHORT).show();
             } else {
                 auth.createUserWithEmailAndPassword(email, password)
@@ -165,7 +165,7 @@ public class SignInActivity extends AppCompatActivity {
             toggleLoginSignUpTextView.setText("Or, log in");
             confirmPasswordEditText.setVisibility(View.VISIBLE);
             nameEditText.setVisibility(View.VISIBLE);
-        } else  {
+        } else {
             loginModeActive = true;
             loginSignUpButton.setText("Log in");
             toggleLoginSignUpTextView.setText("Or, Sign up");
