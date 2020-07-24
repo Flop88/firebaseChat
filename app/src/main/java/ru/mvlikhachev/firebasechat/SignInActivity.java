@@ -17,6 +17,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import ru.mvlikhachev.firebasechat.Model.User;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -32,6 +36,9 @@ public class SignInActivity extends AppCompatActivity {
 
     private boolean loginModeActive;
 
+    FirebaseDatabase database;
+    DatabaseReference usersDatabaseReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +52,9 @@ public class SignInActivity extends AppCompatActivity {
         nameEditText = findViewById(R.id.nameEditText);
         loginSignUpButton = findViewById(R.id.loginSignUpButton);
         toggleLoginSignUpTextView = findViewById(R.id.toggleLoginSignUpTextView);
+
+        database = FirebaseDatabase.getInstance();
+        usersDatabaseReference = database.getReference().child("users");
 
         loginSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,6 +123,7 @@ public class SignInActivity extends AppCompatActivity {
                                     // Sign in success, update UI with the signed-in user's information
                                     Log.d(TAG, "createUserWithEmail:success");
                                     FirebaseUser user = auth.getCurrentUser();
+                                    createUser(user);
                                     startActivity(new Intent(SignInActivity.this,
                                             MainActivity.class));
                                     //updateUI(user);
@@ -129,6 +140,16 @@ public class SignInActivity extends AppCompatActivity {
                         });
             }
         }
+    }
+
+    private void createUser(FirebaseUser firebaseUser) {
+        User user = new User();
+
+        user.setId(firebaseUser.getUid());
+        user.setEmail(firebaseUser.getEmail());
+        user.setName(nameEditText.getText().toString().trim());
+
+        usersDatabaseReference.push().setValue(user);
     }
 
     public void toggleLoginMode(View view) {
