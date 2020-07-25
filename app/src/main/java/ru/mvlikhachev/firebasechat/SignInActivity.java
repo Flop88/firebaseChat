@@ -66,7 +66,7 @@ public class SignInActivity extends AppCompatActivity {
 
         // Если пользователь авторизован - сразу открыть мэйн активити
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(SignInActivity.this, MainActivity.class));
+            startActivity(new Intent(SignInActivity.this, ChatActivity.class));
         }
 
     }
@@ -142,7 +142,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private void startChat() {
         Intent intent = new Intent(SignInActivity.this,
-                MainActivity.class);
+                ChatActivity.class);
         intent.putExtra("userName", nameEditText.getText().toString().trim());
         startActivity(intent);
     }
