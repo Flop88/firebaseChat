@@ -1,6 +1,7 @@
 package ru.mvlikhachev.firebasechat;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -25,6 +26,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,15 +56,21 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference usersDatabaseReference;
     ChildEventListener usersChildeEventListener;
 
+    FirebaseStorage storage;
+    StorageReference chatImagesStorageReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         database = FirebaseDatabase.getInstance();
+        storage = FirebaseStorage.getInstance();
+
         messagesDatabaseReference = database.getReference().child("messages");
         usersDatabaseReference = database.getReference().child("users");
 
+        chatImagesStorageReference = storage.getReference().child("chat_image");
 
         progressBar = findViewById(R.id.progressBar);
         sendImageButton = findViewById(R.id.sendPhotoButton);
@@ -129,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/jpeg");
+                intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 startActivityForResult(Intent.createChooser(intent, "Choose an image"),
                         RC_IMAGE_PICER);
@@ -216,6 +225,16 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_IMAGE_PICER && resultCode == RESULT_OK) {
+            Uri selectedImageUrl = data.getData();
+            StorageReference imageReference = chatImagesStorageReference
+                    .child(selectedImageUrl.getLastPathSegment());
         }
     }
 }
