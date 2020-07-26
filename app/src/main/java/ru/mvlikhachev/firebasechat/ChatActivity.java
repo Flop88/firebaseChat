@@ -50,23 +50,35 @@ public class ChatActivity extends AppCompatActivity {
     private EditText messageEditText;
 
     private String username;
+    private String recipientUserId;
 
     public static final int RC_IMAGE_PICER = 1488;
 
-    FirebaseDatabase database;
-    DatabaseReference messagesDatabaseReference;
-    ChildEventListener messagesChildeEventListener;
+    private FirebaseAuth auth;
+    private FirebaseDatabase database;
+    private DatabaseReference messagesDatabaseReference;
+    private ChildEventListener messagesChildeEventListener;
 
-    DatabaseReference usersDatabaseReference;
-    ChildEventListener usersChildeEventListener;
+    private DatabaseReference usersDatabaseReference;
+    private ChildEventListener usersChildeEventListener;
 
-    FirebaseStorage storage;
-    StorageReference chatImagesStorageReference;
+    private FirebaseStorage storage;
+    private StorageReference chatImagesStorageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        FirebaseAuth.getInstance();
+
+        Intent intent = getIntent();
+        if(intent != null) {
+            username = intent.getStringExtra("userName");
+            recipientUserId = intent.getStringExtra("recipientUserId");
+        } else {
+            username = "Default User";
+        }
 
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -80,14 +92,6 @@ public class ChatActivity extends AppCompatActivity {
         sendImageButton = findViewById(R.id.sendPhotoButton);
         sendMessageButton = findViewById(R.id.sendMessageButton);
         messageEditText = findViewById(R.id.messageEditText);
-
-        Intent intent = getIntent();
-
-        if(intent != null) {
-            username = intent.getStringExtra("userName");
-        } else {
-            username = "Default User";
-        }
 
         messageListView = findViewById(R.id.messageListView);
 
@@ -128,6 +132,8 @@ public class ChatActivity extends AppCompatActivity {
                 Message message = new Message();
                 message.setText(messageEditText.getText().toString());
                 message.setName(username);
+                message.setSender(auth.getCurrentUser().getUid());
+                message.setRecipient(recipientUserId);
                 message.setImageUrl(null);
 
                 messagesDatabaseReference.push().setValue(message);
@@ -185,7 +191,10 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Message message = snapshot.getValue(Message.class);
 
-                adapter.add(message);
+                if(message.getSender().equals(auth.getCurrentUser().getUid()) &&
+                        message.getRecipient().equals(recipientUserId)) {
+                    adapter.add(message);
+                }
 
             }
 
