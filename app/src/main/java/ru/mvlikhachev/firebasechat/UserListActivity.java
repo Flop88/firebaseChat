@@ -1,6 +1,10 @@
 package ru.mvlikhachev.firebasechat;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,6 +25,8 @@ import ru.mvlikhachev.firebasechat.Data.UserAdapter;
 import ru.mvlikhachev.firebasechat.Model.User;
 
 public class UserListActivity extends AppCompatActivity {
+
+    private FirebaseAuth auth;
 
     private DatabaseReference usersDatabaseReference;
     private ChildEventListener usersChildEventListener;
@@ -34,6 +41,8 @@ public class UserListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
+
+        auth = FirebaseAuth.getInstance();
 
         userArrayList = new ArrayList<>();
 
@@ -51,9 +60,14 @@ public class UserListActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     User user = snapshot.getValue(User.class);
-                    user.setAvatarMockUpResource(R.drawable.ic_baseline_person_24);
-                    userArrayList.add(user);
-                    userAdapter.notifyDataSetChanged();
+
+                    //Убираем авторизованного пользователя из списка отображаемых пользователей
+                    if (!user.getId().equals(auth.getCurrentUser().getUid())) {
+                        user.setAvatarMockUpResource(R.drawable.ic_baseline_person_24);
+                        userArrayList.add(user);
+
+                        userAdapter.notifyDataSetChanged();
+                    }
                 }
 
                 @Override
@@ -88,5 +102,24 @@ public class UserListActivity extends AppCompatActivity {
 
         userRecyclerView.setLayoutManager(userLayoutManager);
         userRecyclerView.setAdapter(userAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(UserListActivity.this, SignInActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
