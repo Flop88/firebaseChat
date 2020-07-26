@@ -35,49 +35,38 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         LayoutInflater layoutInflater =
                 (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
-        Message message = getItem(position);
+        Message awesomeMessage = getItem(position);
         int layoutResource = 0;
         int viewType = getItemViewType(position);
 
-
-
-
-
-
-
-
-        if(convertView == null) {
-            convertView = ((Activity)getContext())
-                    .getLayoutInflater()
-                    .inflate(R.layout.message_item, parent, false);
+        if (viewType == 0) {
+            layoutResource = R.layout.my_message_item;
+        } else {
+            layoutResource = R.layout.your_message_item;
         }
 
-        ImageView photoImageView = convertView
-                .findViewById(R.id.photoImageView);
-        TextView textTextView = convertView
-                .findViewById(R.id.textTextView);
-        TextView nameTextView = convertView
-                .findViewById(R.id.nameTextView);
+        if (convertView != null) {
+            viewHolder = (ViewHolder) convertView.getTag();
+        } else {
+            convertView = layoutInflater.inflate(
+                    layoutResource, parent, false);
+            viewHolder = new ViewHolder(convertView);
+            convertView.setTag(viewHolder);
+        }
 
-        Message message = getItem(position);
-
-        boolean isText = message.getImageUrl() == null;
+        boolean isText = awesomeMessage.getImageUrl() == null;
 
         if (isText) {
-            textTextView.setVisibility(View.VISIBLE);
-            photoImageView.setVisibility(View.GONE);
-            textTextView.setText(message.getText());
+            viewHolder.messageTextView.setVisibility(View.VISIBLE);
+            viewHolder.photoImageView.setVisibility(View.GONE);
+            viewHolder.messageTextView.setText(awesomeMessage.getText());
         } else {
-            textTextView.setVisibility(View.GONE);
-            photoImageView.setVisibility(View.VISIBLE);
-
-            Glide.with(photoImageView.getContext())
-                    .load(message.getImageUrl())
-                    .into(photoImageView);
+            viewHolder.messageTextView.setVisibility(View.GONE);
+            viewHolder.photoImageView.setVisibility(View.VISIBLE);
+            Glide.with(viewHolder.photoImageView.getContext())
+                    .load(awesomeMessage.getImageUrl())
+                    .into(viewHolder.photoImageView);
         }
-
-        nameTextView.setText(message.getName());
-
 
         return convertView;
     }
