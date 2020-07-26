@@ -7,16 +7,18 @@ public class Message {
     private String sender;
     private String recipient;
     private String imageUrl;
+    private boolean isMine;
 
     public Message() {
     }
 
-    public Message(String text, String name, String sender, String recipient, String imageUrl) {
+    public Message(String text, String name, String sender, String recipient, String imageUrl, boolean isMine) {
         this.text = text;
         this.name = name;
         this.sender = sender;
         this.recipient = recipient;
         this.imageUrl = imageUrl;
+        this.isMine = isMine;
     }
 
     public String getText() {
@@ -57,5 +59,13 @@ public class Message {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean isMine() {
+        return isMine;
+    }
+
+    public void setMine(boolean mine) {
+        isMine = mine;
     }
 }

@@ -1,7 +1,7 @@
 package ru.mvlikhachev.firebasechat.Data;
 
 import android.app.Activity;
-import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,13 +16,35 @@ import ru.mvlikhachev.firebasechat.Model.Message;
 import ru.mvlikhachev.firebasechat.R;
 
 public class MessageAdapter extends ArrayAdapter<Message> {
-    public MessageAdapter(Context context, int resource, List<Message>messages) {
+
+    private List<Message> messages;
+    private Activity activity;
+
+    public MessageAdapter(Activity context, int resource, List<Message>messages) {
         super(context, resource, messages);
+
+        this.messages = messages;
+        this.activity = context;
     }
 
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+        ViewHolder viewHolder;
+        LayoutInflater layoutInflater =
+                (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+
+        Message message = getItem(position);
+        int layoutResource = 0;
+        int viewType = getItemViewType(position);
+
+
+
+
+
+
+
 
         if(convertView == null) {
             convertView = ((Activity)getContext())
@@ -58,5 +80,33 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
 
         return convertView;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        int flag;
+        Message message = messages.get(position);
+        if (message.isMine()) {
+            flag = 0;
+        } else {
+            flag = 1;
+        }
+        return flag;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    private class ViewHolder {
+        private TextView messageTextView;
+        private ImageView photoImageView;
+
+        public ViewHolder(View view) {
+            photoImageView = view.findViewById(R.id.photoImageView);
+            messageTextView = view.findViewById(R.id.messageTextView);
+        }
     }
 }
