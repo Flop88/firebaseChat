@@ -70,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        FirebaseAuth.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -192,7 +192,10 @@ public class ChatActivity extends AppCompatActivity {
                 Message message = snapshot.getValue(Message.class);
 
                 if(message.getSender().equals(auth.getCurrentUser().getUid()) &&
-                        message.getRecipient().equals(recipientUserId)) {
+                        message.getRecipient().equals(recipientUserId) ||
+                   message.getRecipient().equals(auth.getCurrentUser().getUid()) &&
+                                message.getSender().equals(recipientUserId)
+                ) {
                     adapter.add(message);
                 }
 
@@ -271,6 +274,8 @@ public class ChatActivity extends AppCompatActivity {
                         Message message = new Message();
                         message.setImageUrl(downloadUri.toString());
                         message.setName(username);
+                        message.setSender(auth.getCurrentUser().getUid());
+                        message.setRecipient(recipientUserId);
                         messagesDatabaseReference.push().setValue(message);
                     } else {
                         // Handle failures
