@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:background="@drawable/your_message_bubble"
         android:orientation="vertical"
         android:paddingBottom="10dp"

@@ -51,6 +51,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private String username;
     private String recipientUserId;
+    private String recipientUserName;
 
     public static final int RC_IMAGE_PICER = 1488;
 
@@ -76,9 +77,10 @@ public class ChatActivity extends AppCompatActivity {
         if(intent != null) {
             username = intent.getStringExtra("userName");
             recipientUserId = intent.getStringExtra("recipientUserId");
-        } else {
-            username = "Default User";
+            recipientUserName = intent.getStringExtra("recipientUserName");
         }
+
+        setTitle("Chat with " + recipientUserName);
 
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
